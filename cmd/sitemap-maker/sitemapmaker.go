@@ -74,7 +74,7 @@ func main() {
 		timer *time.Timer
 		messageChan chan string
 		jobs []*scraper.Job
-		results map[string][]*url2.URL
+		results map[string][]string
 	)
 
 	// Read File
@@ -98,7 +98,7 @@ func main() {
 		job := scraper.NewJobFromUrl(origin)
 		job.MessageChan = messageChan
 		job.TimeoutChan = make(chan struct{})
-		job.ResultChan = make(chan []*url2.URL)
+		job.ResultChan = make(chan []string)
 
 		go func() {
 			job.Start()
@@ -111,7 +111,7 @@ func main() {
 	messageChan <- "수집을 완료하였습니다! 파일 생성 중....."
 
 	// end
-	results = make(map[string][]*url2.URL, 0)
+	results = make(map[string][]string, 0)
 	for _, job := range jobs {
 		job.TimeoutChan <- struct{}{}
 		result := <- job.ResultChan

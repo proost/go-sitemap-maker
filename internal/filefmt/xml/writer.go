@@ -2,12 +2,10 @@ package xml
 
 import (
 	"encoding/xml"
-	url2 "net/url"
+	"fmt"
 	"os"
 	"time"
 )
-
-var now = time.Now().Format("2021-08-15T22:04:05")
 
 type Urlset struct {
 	XMLName        xml.Name `xml:"urlset"`
@@ -24,7 +22,7 @@ type URL struct {
 	Lastmod string `xml:"lastmod"`
 }
 
-func Write(fileName string, results []*url2.URL) error {
+func Write(fileName string, results []string) error {
 	var (
 		err error
 		xmlFile *os.File
@@ -63,11 +61,12 @@ func Write(fileName string, results []*url2.URL) error {
 	return nil
 }
 
-func makeUrlElements(results []*url2.URL) []URL {
+func makeUrlElements(results []string) []URL {
 	urls := make([]URL, 0)
+	now := getCurrentTimeString()
 	for _, link := range results {
 		url := URL{
-			Loc: link.String(),
+			Loc: link,
 			Lastmod: now,
 		}
 		urls = append(urls, url)
@@ -76,10 +75,16 @@ func makeUrlElements(results []*url2.URL) []URL {
 	return urls
 }
 
+func getCurrentTimeString() string {
+	now := time.Now()
+	return fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
+		now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
+}
+
 func newUrlsetWithAttributes() *Urlset {
 	return &Urlset{
 		SchemaLocation: "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd",
 		Xsi: "http://www.w3.org/2001/XMLSchema-instance",
-		Xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+		Xmlns: "https://www.sitemaps.org/schemas/sitemap/0.9",
 	}
 }

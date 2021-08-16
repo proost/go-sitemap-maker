@@ -9,14 +9,14 @@ type Job struct {
 	origin *url2.URL
 	result jobResult
 	TimeoutChan chan struct{}
-	ResultChan chan []*url2.URL
+	ResultChan chan []string
 	MessageChan chan string
 }
 
-type jobResult map[*url2.URL]struct{}
+type jobResult map[string]struct{}
 
-func (jr jobResult) resultToArray() []*url2.URL {
-	keys := make([]*url2.URL, 0)
+func (jr jobResult) resultToArray() []string {
+	keys := make([]string, 0)
 	for k, _ := range jr {
 		keys = append(keys, k)
 	}
@@ -27,7 +27,7 @@ func (jr jobResult) updateResult(urls []*url2.URL) {
 	for _, url := range urls {
 		url := url
 
-		jr[url] = struct{}{}
+		jr[url.String()] = struct{}{}
 	}
 }
 
@@ -81,7 +81,7 @@ func (w *Job) Start() {
 			w.ResultChan <- w.result.resultToArray()
 			return
 		default:
-			if len(w.result) - count >= 50000 {
+			if len(w.result) - count >= 3000 {
 				count = len(w.result)
 				w.MessageChan <- fmt.Sprintf("%s에서 %d개의 url이 수집 중 입니다.....", w.origin.String(), count)
 			}
