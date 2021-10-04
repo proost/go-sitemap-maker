@@ -10,8 +10,8 @@ import (
 type Urlset struct {
 	XMLName        xml.Name `xml:"urlset"`
 	Text           string   `xml:",chardata"`
-	SchemaLocation string   `xml:"schemaLocation,attr"`
-	Xsi            string   `xml:"xsi,attr"`
+	SchemaLocation string   `xml:"xsi:schemaLocation,attr"`
+	Xsi            string   `xml:"xmlns:xsi,attr"`
 	Xmlns          string   `xml:"xmlns,attr"`
 	URL            []URL    `xml:"url"`
 }
@@ -83,8 +83,8 @@ func getCurrentTimeString() string {
 
 func newUrlsetWithAttributes() *Urlset {
 	return &Urlset{
-		SchemaLocation: "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd",
-		Xsi: "http://www.w3.org/2001/XMLSchema-instance",
 		Xmlns: "https://www.sitemaps.org/schemas/sitemap/0.9",
+		Xsi: "http://www.w3.org/2001/XMLSchema-instance",
+		SchemaLocation: "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd",
 	}
 }
