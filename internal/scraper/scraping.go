@@ -81,7 +81,7 @@ func (w *Job) Start() {
 			w.ResultChan <- w.result.resultToArray()
 			return
 		default:
-			if len(w.result) - count >= 3000 {
+			if len(w.result) - count >= 2000 {
 				count = len(w.result)
 				w.MessageChan <- fmt.Sprintf("%s에서 %d개의 url이 수집 중 입니다.....", w.origin.String(), count)
 			}
