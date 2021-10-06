@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var client = http.Client{Timeout: time.Second * 1}
+var client = http.Client{Timeout: time.Second * 5}
 
 func GetUrlContent(url string) (string, error) {
 	var (

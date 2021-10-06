@@ -55,6 +55,17 @@ func (w *Job) Start() {
 	links = append(links, w.origin)
 
 	for {
+		select {
+		case <- w.TimeoutChan:
+			w.ResultChan <- w.result.resultToArray()
+			return
+		default:
+			if len(w.result) - count >= 2000 {
+				count = len(w.result)
+				w.MessageChan <- fmt.Sprintf("%s에서 %d개의 url이 수집 중 입니다.....", w.origin.String(), count)
+			}
+		}
+
 		if len(links) > 0 {
 			next := links[0]
 
@@ -74,17 +85,6 @@ func (w *Job) Start() {
 			w.updateResult(foundLinks)
 			links = append(links, foundLinks...)
 			links = links[1:]
-		}
-
-		select {
-		case <- w.TimeoutChan:
-			w.ResultChan <- w.result.resultToArray()
-			return
-		default:
-			if len(w.result) - count >= 2000 {
-				count = len(w.result)
-				w.MessageChan <- fmt.Sprintf("%s에서 %d개의 url이 수집 중 입니다.....", w.origin.String(), count)
-			}
 		}
 	}
 }
