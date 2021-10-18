@@ -70,10 +70,10 @@ func init() {
 func main() {
 	var (
 		err error
-		urls []*url2.URL
+		urls []url2.URL
 		timer *time.Timer
 		messageChan chan string
-		jobs []*scraper.Job
+		jobs []scraper.Job
 		results map[string][]string
 	)
 
@@ -88,7 +88,7 @@ func main() {
 	go printMessage(messageChan)
 
 	// start jobs
-	jobs = make([]*scraper.Job, 0)
+	jobs = make([]scraper.Job, 0)
 	timer = time.NewTimer(time.Minute * time.Duration(*term))
 	for _, url := range urls {
 
@@ -104,7 +104,7 @@ func main() {
 			job.Start()
 		}()
 
-		jobs = append(jobs, job)
+		jobs = append(jobs, *job)
 	}
 
 	<- timer.C
@@ -116,6 +116,9 @@ func main() {
 		job.TimeoutChan <- struct{}{}
 		result := <- job.ResultChan
 		results[job.Origin().Host] = result
+
+		close(job.TimeoutChan)
+		close(job.ResultChan)
 	}
 
 	for domainName, links := range results {
@@ -135,4 +138,6 @@ func main() {
 	}
 
 	messageChan <- "모든 작업을 완료하였습니다!"
+
+	close(messageChan)
 }

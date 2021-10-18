@@ -7,10 +7,10 @@ import (
 
 var pattern = regexp.MustCompile("<a.*?href=\"(.*?)\"")
 
-func Parse(url *url2.URL, content string) ([]*url2.URL, error) {
+func Parse(url url2.URL, content string) ([]url2.URL, error) {
 	var (
 		err error
-		links	[]*url2.URL
+		links	[]url2.URL
 		matches [][]string
 	)
 
@@ -29,7 +29,7 @@ func Parse(url *url2.URL, content string) ([]*url2.URL, error) {
 		}
 
 		if link.Host == url.Host {
-			links = append(links, link)
+			links = append(links, *link)
 		}
 	}
 

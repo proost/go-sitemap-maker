@@ -6,7 +6,7 @@ import (
 )
 
 type Job struct {
-	origin *url2.URL
+	origin url2.URL
 	result jobResult
 	TimeoutChan chan struct{}
 	ResultChan chan []string
@@ -23,7 +23,7 @@ func (jr jobResult) resultToArray() []string {
 	return keys
 }
 
-func (jr jobResult) updateResult(urls []*url2.URL) {
+func (jr jobResult) updateResult(urls []url2.URL) {
 	for _, url := range urls {
 		url := url
 
@@ -31,7 +31,7 @@ func (jr jobResult) updateResult(urls []*url2.URL) {
 	}
 }
 
-func NewJobFromUrl(url *url2.URL) *Job {
+func NewJobFromUrl(url url2.URL) *Job {
 	w := Job{
 		origin: url,
 		result: make(jobResult),
@@ -40,18 +40,18 @@ func NewJobFromUrl(url *url2.URL) *Job {
 	return &w
 }
 
-func (w *Job) updateResult(foundLinks []*url2.URL) {
+func (w *Job) updateResult(foundLinks []url2.URL) {
 	w.result.updateResult(foundLinks)
 }
 
-func (w *Job) Origin() *url2.URL {
+func (w *Job) Origin() url2.URL {
 	return w.origin
 }
 
 func (w *Job) Start() {
 	// init
 	count := 0
-	links := make([]*url2.URL, 0)
+	links := make([]url2.URL, 0)
 	links = append(links, w.origin)
 
 	for {

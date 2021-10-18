@@ -9,12 +9,12 @@ import (
 	"os"
 )
 
-func Read(filePath string) ([]*url2.URL, error){
+func Read(filePath string) ([]url2.URL, error){
 	var (
 		err	error
 		file *os.File
 		rows [][]string
-		urls []*url2.URL
+		urls []url2.URL
 	)
 
 	// Open File
@@ -33,7 +33,7 @@ func Read(filePath string) ([]*url2.URL, error){
 	}
 
 	// Get Urls By Row
-	urls = make([]*url2.URL, 0)
+	urls = make([]url2.URL, 0)
 	for _, row := range rows {
 		url, err := url2.Parse(row[0])
 		if err != nil {
@@ -42,7 +42,7 @@ func Read(filePath string) ([]*url2.URL, error){
 		if !url.IsAbs() {
 			return nil, fmt.Errorf("%s is not correct format", url.String())
 		}
-		urls = append(urls, url)
+		urls = append(urls, *url)
 	}
 
 	return urls, nil
